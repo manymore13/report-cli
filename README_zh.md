@@ -17,12 +17,12 @@
 ### 快速安装
 
 ```bash
-pip install eastmoney-reports
+pip install report-cli
 ```
 
 安装后可以使用以下命令：
-- `eastmoney`（推荐）
-- `report`（旧版）
+- `report`（推荐）
+- `eastmoney`、`em`（别名）
 
 ### 从源码安装
 
@@ -302,7 +302,7 @@ eastmoney-mcp
 ```
 请帮我安装和配置东方财富 MCP 服务器：
 
-1. 安装包：pip install eastmoney-reports
+1. 安装包：pip install report-cli
 2. 将以下配置添加到我的 MCP 配置文件（如 ~/.cursor/mcp.json 或 ~/.cline/mcp_config.json）：
 {
   "mcpServers": {
@@ -321,7 +321,7 @@ eastmoney-mcp
 
 ```bash
 # 无需安装直接运行
-pipx run eastmoney-reports eastmoney-mcp
+pipx run report-cli eastmoney-mcp
 ```
 
 如果还没安装 pipx：

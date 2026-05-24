@@ -26,7 +26,7 @@ A **command-line tool** that helps you:
 ### Quick Install | 快速安装
 
 ```bash
-pip install eastmoney-reports
+pip install report-cli
 ```
 
 After installation, you can use either command:
@@ -340,7 +340,7 @@ For AI agents that support prompt-based installation (e.g., Cursor, Cline), copy
 ```
 Please install and configure the Eastmoney MCP server:
 
-1. Install the package: pip install eastmoney-reports
+1. Install the package: pip install report-cli
 2. Add this to my MCP config file (e.g., ~/.cursor/mcp.json or ~/.cline/mcp_config.json):
 {
   "mcpServers": {
@@ -361,7 +361,7 @@ Using pipx (similar to npx for Python):
 
 ```bash
 # Run without permanent installation | 无需安装直接运行
-pipx run eastmoney-reports eastmoney-mcp
+pipx run report-cli eastmoney-mcp
 ```
 
 If you don't have pipx installed:

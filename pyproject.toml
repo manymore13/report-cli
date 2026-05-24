@@ -3,8 +3,8 @@ requires = ["setuptools>=68.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "eastmoney-reports"
-version = "1.1.1"
+name = "report-cli"
+version = "1.1.2"
 description = "Tool for querying and downloading Eastmoney research reports"
 readme = "README.md"
 license = "MIT"
