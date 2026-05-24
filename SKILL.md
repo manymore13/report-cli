@@ -1,5 +1,5 @@
 ---
-name: eastmoney-reports
+name: report-cli
 description: 研报查询下载工具。当用户需要查询、下载、分析行业研报、个股研报、策略报告、宏观研究、券商晨报时使用此 skill。
 ---
 
