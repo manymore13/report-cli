@@ -173,6 +173,8 @@ def create_parser():
   report d -i 1046 -o ./reports      游戏行业，保存到 ./reports
   report d -i 1046 -s 5              游戏行业，5篇
   report d -i 1046 -s 3 -p 2        游戏行业，第2页，3篇
+  report d -i 1046 -s 5 -n 5        查询5篇，只下载第5篇
+  report d -i 1046 -n 1,3,5         只下载第1、3、5篇
 
   # 下载个股研报
   report d -t stock -c 600519 -o ./mt   茅台研报
@@ -180,9 +182,6 @@ def create_parser():
   # 下载其他类型
   report d -t strategy -s 5 -o ./reports  策略报告
   report d -t macro -s 5 -o ./reports     宏观研究
-
-  # 下载全部行业
-  report d -i 1046 --all -o ./reports   下载游戏行业所有页
 
   # 按日期筛选下载
   report d -i 1046 --begin 2025-06-01 --end 2025-12-31 -o ./reports
@@ -203,6 +202,10 @@ def create_parser():
   -p, --page      下载第几页，默认: 1
 
   -s, --pagesize  每页下载数量，默认: 20
+
+  -n, --index     指定下载第几条 (1-based)。如 -n 5 只下载第5篇
+                  支持逗号分隔多个: -n 1,3,5 下载第1、3、5篇
+                  不指定则下载全部
 
   -o, --output    输出目录，PDF 保存位置。默认: ./reports
                   下载后会按类型创建子目录，如 ./reports/industry/
@@ -259,11 +262,16 @@ def create_parser():
         help='结束日期，格式 YYYY-MM-DD'
     )
     parser_download.add_argument(
+        '-n', '--index',
+        type=str,
+        help='指定下载第几条，如 5 或 1,3,5。不指定则下载全部'
+    )
+    parser_download.add_argument(
         '--all',
         action='store_true',
         help='下载该类型所有可用的研报'
     )
-    
+
     # ==================== list 命令 ====================
     parser_list = subparsers.add_parser(
         'list',
@@ -342,6 +350,19 @@ def validate_date(date_str, parser):
 
 
 # ==================== CLI Command Handlers ====================
+
+def parse_index(index_str, total):
+    """Parse --index argument like '5' or '1,3,5', return list of 0-based indexes"""
+    result = []
+    for part in index_str.split(','):
+        part = part.strip()
+        if '-' in part:
+            a, b = part.split('-', 1)
+            result.extend(range(int(a) - 1, int(b)))
+        else:
+            result.append(int(part) - 1)
+    return [i for i in result if 0 <= i < total]
+
 
 def handle_query(args):
     """Handle query command"""
@@ -432,13 +453,19 @@ def handle_download(args):
             return
         
         client.display_reports(reports, page_no=args.page)
-        
+
+        # 如果指定了 --index，只下载对应序号的报告
+        if args.index:
+            indexes = parse_index(args.index, len(reports))
+            reports = [reports[i] for i in indexes]
+            print(f'指定下载第 {args.index} 篇')
+
         type_name = args.type
         if args.type == 'industry' and args.industry:
             type_name = client.get_industry_name(args.industry) or args.industry
         elif args.type == 'stock' and args.code:
             type_name = args.code
-        
+
         client.download_reports(reports, args.output, report_type=type_name)
 
 

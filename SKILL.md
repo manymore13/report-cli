@@ -65,10 +65,14 @@ report query -i 1046 --save-csv
 ### 3. 下载PDF
 
 ```bash
-report download -i 1046 -s 3 -o ./reports     # 下载游戏行业3篇
-report download -t strategy -s 5 -o ./reports  # 下载策略报告
-report download -t stock -c 600519 -o ./reports # 下载茅台研报
+report download -i 1046 -s 5 -o ./reports      # 下载游戏行业5篇
+report download -i 1046 -s 5 -n 5 -o ./reports  # 查5篇，只下载第5篇
+report download -i 1046 -n 1,3,5 -o ./reports   # 只下载第1、3、5篇
+report download -t strategy -s 5 -o ./reports    # 下载策略报告
+report download -t stock -c 600519 -o ./reports  # 下载茅台研报
 ```
+
+> 重要：如果用户说"下载第X篇"，必须用 `-n X` 参数，不能把全部下载。先用 `query` 确认序号，再用 `download -n` 指定下载。
 
 ### 4. 更新行业列表
 
