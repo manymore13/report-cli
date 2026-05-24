@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "report-cli"
-version = "1.2.0"
+version = "1.3.0"
 description = "Tool for querying and downloading Eastmoney research reports"
 readme = "README.md"
 license = "MIT"
@@ -27,14 +27,10 @@ dependencies = [
     "lxml>=4.9.0",
 ]
 
-[project.optional-dependencies]
-mcp = ["fastmcp>=0.1.0"]
-
 [project.scripts]
 report = "eastmoney.cli:main"
 em = "eastmoney.cli:main"
 eastmoney = "eastmoney.cli:main"
-eastmoney-mcp = "eastmoney.mcp_server:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]

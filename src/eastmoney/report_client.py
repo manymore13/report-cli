@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-东方财富研报API客户端
+研报API客户端
 封装各类研报的API调用逻辑
 """
 
@@ -47,7 +47,7 @@ REPORT_TYPE_COLUMN_PREFIX = {
 
 
 class EastMoneyReportClient:
-    """东方财富研报API客户端"""
+    """研报API客户端"""
     
     # 行业研报和个股研报用 /list 接口
     LIST_API_URL = 'https://reportapi.eastmoney.com/report/list'
@@ -91,8 +91,8 @@ class EastMoneyReportClient:
                 return []
     
     def update_industry_data(self):
-        """从东方财富API更新行业数据"""
-        print('正在从东方财富获取最新行业列表...')
+        """更新行业数据"""
+        print('正在获取最新行业列表...')
         
         # 尝试从行业研报API获取完整行业列表
         try:

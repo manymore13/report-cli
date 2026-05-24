@@ -60,9 +60,6 @@ dependencies = [
     "lxml>=4.9.0",
 ]
 
-[project.optional-dependencies]
-mcp = ["fastmcp>=0.1.0"]
-
 [project.scripts]
 eastmoney = "eastmoney.cli:main"
 report = "eastmoney.cli:main"

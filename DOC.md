@@ -1,6 +1,6 @@
-# 东方财富研报 MCP Server
+# Report CLI
 
-基于东方财富数据接口的研报查询和下载工具，支持通过 MCP 协议与大模型集成。
+基于数据接口的研报查询和下载命令行工具。
 
 ## 功能特性
 
@@ -23,74 +23,23 @@
 
 ## 使用示例
 
-### 查询行业列表
+```bash
+# 列出所有行业
+report list
 
+# 搜索行业
+report list -s 游戏
+
+# 查询游戏行业研报
+report query -i 1046 -s 10
+
+# 下载策略报告
+report download -t strategy -s 5 -o ./reports
 ```
-请列出所有可用的行业分类
-```
-
-### 查询游戏行业研报
-
-```
-查询游戏行业的研究报告，显示前10条
-```
-
-### 下载策略报告
-
-```
-下载最新的5份策略报告到本地
-```
-
-## 工具列表
-
-### list_industries
-
-列出所有可用的行业分类，用于查询研报前选择行业代码。
-
-**参数**:
-- `search` (可选): 搜索关键词过滤行业名称
-
-### query_reports
-
-查询研报列表。
-
-**参数**:
-- `type`: 研报类型 (industry/stock/strategy/macro/morning)
-- `industry`: 行业代码 (查询行业研报时使用)
-- `stock_code`: 股票代码 (查询个股研报时使用)
-- `page`: 页码，默认 1
-- `pagesize`: 每页数量，默认 10
-- `begin`: 开始日期，格式 YYYY-MM-DD
-- `end`: 结束日期，格式 YYYY-MM-DD
-
-### download_reports
-
-下载研报 PDF 文件。
-
-**参数**:
-- `type`: 研报类型
-- `industry`: 行业代码
-- `stock_code`: 股票代码
-- `page`: 页码
-- `pagesize`: 每页数量
-- `output`: 输出目录
-
-### get_industry_code
-
-根据关键词搜索行业代码。
-
-**参数**:
-- `keyword`: 行业名称关键词
 
 ## 数据来源
 
-数据来源于东方财富网 (data.eastmoney.com)，仅供学习研究使用。
-
-## 远程 MCP
-
-本项目支持[一键部署到腾讯云开发平台](https://docs.cloudbase.net/ai/mcp/develop/host-mcp)，提供远程 Streamable HTTP 访问。
-
-[☁️ 前往云开发平台部署 MCP Server](https://tcb.cloud.tencent.com/dev#/ai?tab=mcp)
+数据仅供学习研究使用。
 
 ## 开源协议
 

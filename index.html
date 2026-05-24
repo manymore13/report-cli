@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>东方财富研报下载工具 | EastMoney Reports Downloader</title>
+    <title>研报下载工具 | Reports Downloader</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
@@ -109,6 +109,79 @@
             margin-top: 8px;
         }
 
+        /* Skill 安装 */
+        .skill-section {
+            background: var(--bg-secondary);
+            border: 1px solid var(--accent-green);
+            border-radius: 12px;
+            padding: 32px;
+            margin: 40px 0;
+            animation: fadeIn 0.8s ease-out 0.3s both;
+        }
+
+        .skill-section .section-title {
+            color: var(--accent-green);
+        }
+
+        .skill-prompt {
+            background: var(--code-bg);
+            border: 1px solid var(--accent-green);
+            border-radius: 8px;
+            padding: 16px 20px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.95rem;
+            color: var(--accent-green);
+            text-align: center;
+            margin: 16px 0;
+            word-break: break-all;
+        }
+
+        .skill-note {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            text-align: center;
+            margin-top: 12px;
+        }
+
+        .chat-bubbles {
+            margin-top: 24px;
+        }
+
+        .chat-bubble {
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+        }
+
+        .chat-bubble.user {
+            border-left: 3px solid var(--accent-blue);
+        }
+
+        .chat-bubble.agent {
+            border-left: 3px solid var(--accent-green);
+            color: var(--text-secondary);
+        }
+
+        /* 方法标签 */
+        .method-badge {
+            display: inline-block;
+            background: var(--accent-green);
+            color: #000;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        .method-badge.secondary {
+            background: var(--accent-orange);
+        }
+
         /* Badge */
         .badges {
             display: flex;
@@ -127,35 +200,6 @@
             color: var(--text-secondary);
         }
 
-        /* Agent Section */
-        .agent-section {
-            margin: 50px 0;
-            animation: fadeIn 0.8s ease-out 0.3s both;
-        }
-        
-        .agent-content {
-            background: var(--bg-secondary);
-            border: 1px solid var(--accent-blue);
-            border-radius: 12px;
-            padding: 32px;
-            margin-top: 24px;
-        }
-        
-        .agent-intro {
-            text-align: center;
-            margin-bottom: 24px;
-        }
-        
-        .agent-intro h3 {
-            font-size: 1.3rem;
-            margin-bottom: 8px;
-            color: var(--accent-blue);
-        }
-        
-        .agent-intro p {
-            color: var(--text-secondary);
-        }
-        
         /* 特性卡片 */
         .features {
             display: grid;
@@ -445,52 +489,75 @@
                 <div class="logo-icon">EM</div>
                 <h1>Eastmoney Reports Tool</h1>
             </div>
-            <p class="tagline">Query and download research reports via CLI & MCP</p>
+            <p class="tagline">Query and download research reports via CLI</p>
             
             <div class="badges">
-                <span class="badge">🤖 MCP Server</span>
-                <span class="badge">🖥️ CLI Tool</span>
+                <span class="badge">🤖 Skill 安装</span>
+                <span class="badge">🖥️ CLI</span>
                 <span class="badge">📥 PDF/CSV</span>
                 <span class="badge">🐍 Python</span>
             </div>
         </header>
 
-        <!-- MCP for AI Agents -->
-        <section class="agent-section">
+        <!-- 方式一：Skill 安装 -->
+        <section class="skill-section">
             <h2 class="section-title">
-                <span>🤖</span> Use with AI Agents
+                <span>🤖</span> <span class="method-badge">推荐</span> 方式一：Skill 安装
             </h2>
-            
-            <div class="agent-content">
-                <div class="agent-intro">
-                    <h3>One-command install for agents</h3>
-                    <p>Supports Claude Desktop, Cursor, Cline, and any MCP-compatible AI tool.</p>
+
+            <p style="text-align:center; color: var(--text-secondary); margin-bottom: 16px;">
+                在 Agent 里发送下面这句话，自动完成安装，无需手动操作
+            </p>
+
+            <div class="skill-prompt">
+                请帮我安装 skill: https://raw.githubusercontent.com/manymore13/eastmoney/master/SKILL.md
+            </div>
+
+            <p class="skill-note">
+                适用于 Cursor、Cline、Codex、Claude Code 等支持 Skill 的 Agent 工具
+            </p>
+
+            <div style="margin-top: 28px;">
+                <h3 style="text-align:center; margin-bottom: 16px; color: var(--text-primary);">安装后，直接用自然语言交互</h3>
+
+                <div class="chat-bubbles">
+                    <div class="chat-bubble user">帮我查一下游戏行业的最新研报</div>
+                    <div class="chat-bubble agent">好的，已查询游戏行业最近5篇研报...</div>
+                    <div class="chat-bubble user">下载最近3篇策略报告的PDF</div>
+                    <div class="chat-bubble agent">已下载3篇策略报告到 ./reports/ 目录</div>
+                    <div class="chat-bubble user">贵州茅台有什么最新分析？</div>
+                    <div class="chat-bubble agent">以下是最新的贵州茅台个股研报...</div>
                 </div>
-                
-                <div class="terminal">
-                    <div class="terminal-header">
-                        <span class="terminal-dot dot-red"></span>
-                        <span class="terminal-dot dot-yellow"></span>
-                        <span class="terminal-dot dot-green"></span>
-                        <span class="terminal-title">MCP Server Quick Start</span>
-                    </div>
-                    <div class="terminal-body">
-                        <div class="command-block">
-                            <div class="command-label">① Install package</div>
-                            <div class="command">pip install report-cli</div>
-                        </div>
-                        
-                        <div class="command-block">
-                            <div class="command-label">② Add to MCP config (e.g., claude_desktop_config.json)</div>
-                            <div class="command">{ "mcpServers": { "eastmoney": { "command": "eastmoney-mcp" } } }</div>
-                        </div>
-                        
-                        <div class="command-block">
-                            <div class="command-label">③ Start using in your AI agent</div>
-                            <div class="command">eastmoney-mcp</div>
-                            <div class="command-comment"># Or use via prompt: "Query reports for gaming industry (code 1046)"</div>
-                        </div>
-                    </div>
+            </div>
+        </section>
+
+        <!-- 方式二：CLI 安装 -->
+        <section class="quickstart">
+            <h2 class="section-title" style="margin-bottom: 32px;">
+                <span>💻</span> <span class="method-badge secondary">方式二</span> CLI 安装
+            </h2>
+
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h3>安装</h3>
+                    <div class="step-code">pip install report-cli</div>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3>列出行业</h3>
+                    <div class="step-code">report list</div>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h3>查询研报</h3>
+                    <div class="step-code">report query -i 1046 -s 5</div>
                 </div>
             </div>
         </section>
@@ -500,7 +567,7 @@
             <div class="feature-card">
                 <div class="feature-icon">📋</div>
                 <div class="feature-title">查询研报</div>
-                <div class="feature-desc">快速查找行业、策略、个股等各类研报</div>
+                <div class="feature-desc">行业、策略、宏观、个股等各类研报</div>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">📥</div>
@@ -519,103 +586,39 @@
             </div>
         </section>
 
-        <!-- 终端演示 -->
-        <section class="terminal-section">
-            <h2 class="section-title">
-                <span>💻</span> CLI Quick Start
-            </h2>
-            
-            <div class="terminal">
-                <div class="terminal-header">
-                    <span class="terminal-dot dot-red"></span>
-                    <span class="terminal-dot dot-yellow"></span>
-                    <span class="terminal-dot dot-green"></span>
-                    <span class="terminal-title">Terminal</span>
-                </div>
-                <div class="terminal-body">
-                    <div class="command-block">
-                        <div class="command-label">Install</div>
-                        <div class="command">pip install report-cli</div>
-                    </div>
-                    
-                    <div class="command-block">
-                        <div class="command-label">List industries</div>
-                        <div class="command">eastmoney list</div>
-                    </div>
-                    
-                    <div class="command-block">
-                        <div class="command-label">Query reports</div>
-                        <div class="command">eastmoney query -i 1046 -s 5</div>
-                        <div class="command-comment"># Gaming industry, 5 reports</div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 快速入门 -->
-        <section class="quickstart">
-            <h2 class="section-title" style="margin-bottom: 32px;">
-                <span>🚀</span> Quick Start
-            </h2>
-            
-            <div class="step">
-                <div class="step-number">1</div>
-                <div class="step-content">
-                    <h3>Install</h3>
-                    <div class="step-code">pip install report-cli</div>
-                </div>
-            </div>
-            
-            <div class="step">
-                <div class="step-number">2</div>
-                <div class="step-content">
-                    <h3>List industries</h3>
-                    <div class="step-code">eastmoney list</div>
-                </div>
-            </div>
-            
-            <div class="step">
-                <div class="step-number">3</div>
-                <div class="step-content">
-                    <h3>Query reports</h3>
-                    <div class="step-code">eastmoney query -i 1046 -s 5</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 常见场景 -->
+        <!-- CLI 命令参考 -->
         <section class="usecases">
             <h2 class="section-title">
-                <span>💡</span> Examples
+                <span>📖</span> CLI 命令参考
             </h2>
-            
+
             <div class="usecase-grid">
                 <div class="usecase-card">
                     <div class="usecase-title">
-                        <span class="icon">🎮</span> Gaming Reports
+                        <span class="icon">🎮</span> 行业研报
                     </div>
-                    <div class="usecase-command">eastmoney query -i 1046 -s 10</div>
+                    <div class="usecase-command">report query -i 1046 -s 10</div>
                 </div>
-                
+
                 <div class="usecase-card">
                     <div class="usecase-title">
-                        <span class="icon">📈</span> Strategy Reports
+                        <span class="icon">📈</span> 策略报告
                     </div>
-                    <div class="usecase-command">eastmoney query -t strategy -s 5</div>
+                    <div class="usecase-command">report query -t strategy -s 5</div>
                 </div>
-                
+
                 <div class="usecase-card">
                     <div class="usecase-title">
-                        <span class="icon">🍷</span> Stock Reports
+                        <span class="icon">🍷</span> 个股研报
                     </div>
-                    <div class="usecase-command">eastmoney query -t stock -c 600519</div>
+                    <div class="usecase-command">report query -t stock -c 600519</div>
                 </div>
-                
+
                 <div class="usecase-card">
                     <div class="usecase-title">
-                        <span class="icon">📥</span> Download PDF
+                        <span class="icon">📥</span> 下载PDF
                     </div>
-                    <div class="usecase-command">eastmoney download -i 1046 -s 3 -o ./reports</div>
+                    <div class="usecase-command">report download -i 1046 -s 3 -o ./reports</div>
                 </div>
             </div>
         </section>
