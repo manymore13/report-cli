@@ -39,6 +39,7 @@ pip install report-cli
 
 | 命令 | 说明 |
 |------|------|
+| `report -h` | 帮助文档 |
 | `report list` | 列出所有行业 |
 | `report list -s <关键词>` | 搜索行业 |
 | `report query -i <行业代码>` | 查询行业研报 |
