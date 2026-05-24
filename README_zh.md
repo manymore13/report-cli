@@ -1,5 +1,7 @@
 # Report CLI
 
+[![PyPI version](https://img.shields.io/pypi/v/report-cli.svg)](https://pypi.org/project/report-cli/)
+
 查询和下载券商研报的命令行工具。
 
 ## 使用方式一：Skill 安装（推荐）
