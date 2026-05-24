@@ -1,3 +1,5 @@
 include src/eastmoney/data/industry.json
 include README.md
+include README_zh.md
+include SKILL.md
 include LICENSE

@@ -33,5 +33,6 @@ test_*.py
 .DS_Store
 Thumbs.db
 
-# WorkBuddy 工作助手
+# WorkBuddy
 .workbuddy/
+.superpowers/
