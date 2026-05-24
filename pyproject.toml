@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "report-cli"
-version = "1.1.2"
+version = "1.2.0"
 description = "Tool for querying and downloading Eastmoney research reports"
 readme = "README.md"
 license = "MIT"
