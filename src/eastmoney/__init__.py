@@ -3,7 +3,7 @@
 A command-line tool for querying and downloading research reports from Eastmoney.
 """
 
-__version__ = "1.3.2"
+__version__ = "1.3.3"
 __author__ = "Community Template"
 
 from .cli import main

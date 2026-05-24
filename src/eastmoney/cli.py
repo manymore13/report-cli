@@ -16,7 +16,7 @@ from . import report_client
 def create_parser():
     """创建命令行参数解析器"""
     parser = argparse.ArgumentParser(
-        description='report v1.3.2 --查询和下载券商研报',
+        description='report v1.3.3 --查询和下载券商研报',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog='''
 命令
