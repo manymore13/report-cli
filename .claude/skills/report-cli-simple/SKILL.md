@@ -130,3 +130,10 @@ pip install --upgrade report-cli
 - 不支持港股研报
 - 合理控制频率
 - 数据仅供学习研究使用
+
+## 作者 & 开源
+
+- 作者: [manymore13](https://github.com/manymore13)
+- 开源地址: [github.com/manymore13/report-cli](https://github.com/manymore13/report-cli)
+- 许可: MIT License
+- 数据来源: 东方财富网，仅供学习研究
