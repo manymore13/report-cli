@@ -2,34 +2,30 @@
 
 [![PyPI version](https://img.shields.io/pypi/v/report-cli.svg)](https://pypi.org/project/report-cli/)
 
-查询和下载券商研报的命令行工具。
+查询和下载券商研报的命令行工具，支持行业研报、个股研报、策略报告、宏观研究、券商晨报。数据来源东方财富。
 
-## 使用方式一：Skill 安装（推荐）
+---
 
-### 安装
+## 方式一：Skill 安装（推荐）
 
-在 Agent 对话框里直接发送这句话，Agent 会自动下载并安装到对应目录：
+在 AI Agent（Cursor、Claude Code、Cline、Codex 等）对话框中发送：
 
 ```
-请帮我安装 skill: https://raw.githubusercontent.com/manymore13/eastmoney/master/SKILL.md
+请帮我安装 skill: https://raw.githubusercontent.com/manymore13/report-cli/refs/heads/master/SKILL.md
 ```
 
-> 适用于 Cursor、Cline、Codex、Claude Code 等支持 Skill 的 Agent 工具。
+安装后直接用自然语言交互：
 
-### 使用
+- "帮我查一下游戏行业最近有什么研报"
+- "半导体行业最近 5 篇，只看 10 页以上的"
+- "贵州茅台最新研报说了什么？"
+- "把这三篇下载到 ./reports 目录"
 
-安装后，直接用自然语言交互：
+Agent 会自动区分：你说"查/看/了解"就走查询，说"下载"才下载。
 
-- "帮我查一下游戏行业的最新研报"（走 `query`，只查看）
-- "下载最近5篇策略报告"（走 `download`，下载PDF）
-- "贵州茅台有什么最新分析？"（走 `query`）
-- "把新能源行业的研报导出成表格"（走 `query --save-csv`）
+---
 
-> Agent 会自动区分：用户说"查/看/了解"走 `query`，只有明确说"下载"才走 `download`。
-
-Agent 会自动识别关键词（研报、研究报告、行业分析、策略报告、宏观研究、券商晨报等）并调用本工具。
-
-## 使用方式二：CLI 安装
+## 方式二：CLI 安装
 
 ```bash
 pip install report-cli
@@ -39,39 +35,52 @@ pip install report-cli
 
 | 命令 | 说明 |
 |------|------|
-| `report -h` | 帮助文档 |
-| `report list` | 列出所有行业 |
-| `report list -s <关键词>` | 搜索行业 |
-| `report query -i <行业代码>` | 查询行业研报 |
-| `report query -t strategy` | 查询策略报告 |
-| `report query -t macro` | 查询宏观研究 |
-| `report query -t morning` | 查询券商晨报 |
-| `report query -t stock -c <股票代码>` | 查询个股研报 |
-| `report download -i <行业代码> -o <目录>` | 下载研报 PDF |
+| `report l` | 列出所有行业 |
+| `report l -s 关键词` | 搜索行业 |
+| `report q -i 行业代码` | 查询行业研报 |
+| `report q -t stock -c 股票代码` | 查询个股研报 |
+| `report q -t strategy` | 查询策略报告 |
+| `report q -t macro` | 查询宏观研究 |
+| `report q -t morning` | 查询券商晨报 |
+| `report d -i 行业代码 -o 目录` | 下载研报 PDF |
+| `report u` | 更新行业列表 |
 
 ### 使用示例
 
 ```bash
-report list                                    # 列出所有行业
-report list -s 游戏                             # 搜索行业
-report query -i 1046 -s 5                      # 游戏行业研报
-report query -t strategy -s 10                 # 策略报告
-report query -t stock -c 600519 -s 5           # 茅台个股研报
-report download -t strategy -s 5 -o ./reports  # 下载PDF
-report query -i 1046 -s 10 --save-csv          # 导出CSV
+# 列出行业
+report l                        # 全部行业
+report l -s 游戏                # 搜索包含"游戏"的行业
+
+# 查询研报
+report q -i 1046 -s 10          # 游戏行业，10 条
+report q -i 1046 --begin 2025-06-01 --end 2025-12-31  # 按日期筛选
+report q -t strategy -s 5       # 策略报告
+report q -t stock -c 600519     # 茅台个股研报
+report q -i 1046 --save-csv     # 导出 CSV
+
+# 下载 PDF
+report d -i 1046 -s 5 -o ./reports           # 下载 5 篇
+report d -i 1046 -n 1,3,5 -o ./reports       # 只下载第 1、3、5 篇
+report d -t stock -c 600519 -o ./reports      # 下载茅台研报
+report d -t strategy -s 5 -o ./reports        # 下载策略报告
 ```
 
 ### 主要参数
 
 | 参数 | 说明 |
 |------|------|
-| `-t` | 研报类型：industry / strategy / macro / morning / stock |
-| `-i` | 行业代码 |
-| `-c` | 股票代码 |
-| `-s` | 返回数量 |
-| `-o` | 输出目录 |
-| `--begin` / `--end` | 日期筛选（YYYY-MM-DD） |
-| `--save-csv` | 结果保存为 CSV |
+| `-t` / `--type` | 研报类型：industry / stock / strategy / macro / morning |
+| `-i` / `--industry` | 行业代码（用 `report l` 查看） |
+| `-c` / `--code` | 股票代码 |
+| `-s` / `--pagesize` | 返回数量，默认 20 |
+| `-p` / `--page` | 页码，默认 1 |
+| `-n` / `--index` | 指定下载第几条，如 `5` 或 `1,3,5` |
+| `-o` / `--output` | 输出目录，默认 `./reports` |
+| `--begin` / `--end` | 日期筛选，格式 YYYY-MM-DD |
+| `--save-csv` | 查询结果保存为 CSV |
+
+---
 
 ## License
 
