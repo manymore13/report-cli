@@ -8,56 +8,82 @@ repository: https://github.com/manymore13/report-cli
 
 # 研报工具
 
+## 触发示例
+
+以下说法会触发此 skill：
+
+- "帮我查一下近一个月的半导体行业研报，只看 10 页以上的"
+- "下载茅台最新的 3 份个股研报"
+- "最近有没有看好新能源车的策略报告，给我看摘要"
+- "宏观研究最近有什么新观点"
+- "游戏行业研报有哪些，按页数排个序"
+
 ## 核心原则
 
 **全部操作通过 HTTP 完成，无需安装任何 CLI。**
 
 | 操作 | 方式 |
 |------|------|
-| 查询研报列表 | WebFetch → 东方财富 API（返回 JSON） |
-| 看摘要/页数 | WebFetch → 研报详情页（提取正文） |
-| 下载 PDF | WebFetch 详情页拿 PDF 链接 → curl 下载 |
+| 行业 / 策略 / 宏观 / 晨报查询 | WebFetch → GET 请求 API（返回 JSON） |
+| 个股研报查询 | **bash curl** → POST 请求 API（WebFetch 不支持 POST） |
+| 看摘要 / 页数 | WebFetch → 详情页（提取正文） |
+| 下载 PDF | WebFetch 拿 PDF 链接 → curl 下载 |
+
+---
+
+## 日期处理
+
+`beginTime` 默认取 **30 天前**，`endTime` 默认取**今天**，格式 `YYYY-MM-DD`。除非用户明确指定日期范围。
+
+```
+当前日期由系统提供，不要用写死的日期。
+```
 
 ---
 
 ## 一、查询研报列表 — API 端点
 
-### 行业研报
+### 行业研报（GET，用 WebFetch）
 
 ```
-GET https://reportapi.eastmoney.com/report/list?pageSize=20&pageNo=1&beginTime=2025-01-01&endTime=2025-12-31&qType=1&industryCode=1046&industry=*&rating=*
+https://reportapi.eastmoney.com/report/list?pageSize=20&pageNo=1&beginTime={30天前}&endTime={今天}&qType=1&industryCode=1046&industry=*&rating=*
 ```
 
 | 参数 | 说明 | 示例 |
 |------|------|------|
-| `pageSize` | 每页条数 | 20 |
+| `pageSize` | 每页条数，默认 20 | 20 |
 | `pageNo` | 页码，从 1 开始 | 1 |
-| `beginTime` | 开始日期 | 2025-01-01 |
-| `endTime` | 结束日期 | 2025-12-31 |
+| `beginTime` | 开始日期，默认 30 天前 | 2025-04-25 |
+| `endTime` | 结束日期，默认今天 | 2025-05-25 |
 | `qType` | 固定 1 | 1 |
 | `industryCode` | 行业代码 | 1046 |
 
-### 个股研报
+> `industry=*` 和 `rating=*` 为可选参数。若返回结果为空，尝试去掉这两个参数重试。
 
-```
-POST https://reportapi.eastmoney.com/report/list2
-Content-Type: application/json
-```
+### 个股研报（POST，必须用 bash curl）
 
-```json
-{"pageSize": 20, "pageNo": 1, "beginTime": "2025-01-01", "endTime": "2025-12-31", "code": "600519"}
+**WebFetch 不支持 POST 请求，个股研报查询必须用 bash curl。**
+
+```bash
+curl -s -X POST https://reportapi.eastmoney.com/report/list2 \
+  -H "Content-Type: application/json" \
+  -d '{"pageSize":20,"pageNo":1,"beginTime":"{30天前}","endTime":"{今天}","code":"600519"}'
 ```
 
 | body 字段 | 说明 | 示例 |
 |-----------|------|------|
-| `code` | 股票代码 | 600519 |
-| `pageSize` | 每页条数 | 20 |
-| `pageNo` | 页码 | 1 |
+| `code` | 6 位股票代码 | 600519 |
+| `pageSize` | 每页条数，默认 20 | 20 |
+| `pageNo` | 页码，从 1 开始 | 1 |
 
-### 策略 / 宏观 / 晨报
+**股票代码格式：**
+
+沪市 6 开头（600519 贵州茅台），深市主板 0 开头（000858 五粮液），创业板 3 开头（300750 宁德时代）。输入时传 6 位纯数字，不加交易所前缀。
+
+### 策略 / 宏观 / 晨报（GET，用 WebFetch）
 
 ```
-GET https://reportapi.eastmoney.com/report/jg?pageSize=20&pageNo=1&beginTime=2025-01-01&endTime=2025-12-31&qType={qType}
+https://reportapi.eastmoney.com/report/jg?pageSize=20&pageNo=1&beginTime={30天前}&endTime={今天}&qType={qType}
 ```
 
 | 类型 | qType |
@@ -84,6 +110,17 @@ GET https://reportapi.eastmoney.com/report/jg?pageSize=20&pageNo=1&beginTime=202
 | `stockName` | 股票名称 | list2 |
 | `industryName` | 行业名称 | list |
 
+### 评级对照
+
+| `emRatingName` | 含义 |
+|----------------|------|
+| 买入 | 强烈看好 |
+| 增持 | 看好 |
+| 中性 | 观望 |
+| 减持 | 看空 |
+| 卖出 | 强烈看空 |
+| 不评级 | 仅供参考，无评级 |
+
 ---
 
 ## 二、按页数筛选
@@ -91,9 +128,9 @@ GET https://reportapi.eastmoney.com/report/jg?pageSize=20&pageNo=1&beginTime=202
 API 返回的 `attachPages` 字段即研报页数。
 
 - **行业和个股研报**: `attachPages` 直接在 JSON 里，直接筛选
-- **策略/宏观/晨报**: API 不返回 `attachPages`，需访问详情页后根据正文长度判断
+- **策略 / 宏观 / 晨报**: API 不返回 `attachPages`，需访问详情页后根据正文长度判断
 
-**默认跳过 ≤ 2 页的研报**（通常无实质内容）。用户可指定阈值，如"只看10页以上的"。
+**默认跳过 ≤ 2 页的研报**（通常无实质内容）。用户可指定阈值，如"只看 10 页以上的"。
 
 ---
 
@@ -107,7 +144,9 @@ API 返回的 `attachPages` 字段即研报页数。
 |---------|-----------|
 | 行业 | `https://data.eastmoney.com/report/zw_industry.jshtml?encodeUrl={encodeUrl}` |
 | 个股 | `https://data.eastmoney.com/report/zw_stock.jshtml?encodeUrl={encodeUrl}` |
-| 策略/宏观/晨报 | `https://data.eastmoney.com/report/zw_macresearch.jshtml?encodeUrl={encodeUrl}` |
+| 策略 / 宏观 / 晨报 | `https://data.eastmoney.com/report/zw_macresearch.jshtml?encodeUrl={encodeUrl}` |
+
+> 若详情页返回 404，尝试对 `encodeUrl` 值做 URL encode（`encodeURIComponent`）后再拼接。
 
 ### 页面提取规则
 
@@ -115,10 +154,11 @@ API 返回的 `attachPages` 字段即研报页数。
 
 | 目标 | 提取方式 | 用途 |
 |------|---------|------|
-| 正文摘要 | `div.ctx-content` 内所有 `<p>` 标签文本，取前 800 字 | 判断内容质量、呈现核心观点 |
-| PDF 下载链接 | `a.pdf-link` 的 `href` 属性 | 下载完整 PDF |
-| 标题 | `h1` | 确认页面正确 |
-| 页数（策略/宏观/晨报） | 正文字数 < 500 → 推断 1-2 页 | 补 API 无 attachPages 的缺口 |
+| 正文摘要 | 提取 `<p>` 标签文本内容，取前 800 字 | 判断内容质量、呈现核心观点 |
+| PDF 下载链接 | 优先用 `a.pdf-link` 的 `href` | 下载完整 PDF |
+| PDF 链接（备用） | 正则 `https://pdf\.dfcfw\.com/pdf/[^\s"'<>]+\.pdf` | 当 CSS 选择器在 WebFetch 中失效时使用 |
+| 标题 | `h1` 或页面 title | 确认页面正确 |
+| 页数（策略 / 宏观 / 晨报） | 正文字数 < 500 → 推断 1-2 页 | 补 API 无 attachPages 的缺口 |
 
 ---
 
@@ -126,7 +166,7 @@ API 返回的 `attachPages` 字段即研报页数。
 
 ### 步骤
 
-1. **拿 PDF 链接**：从详情页提取 `a.pdf-link` 的 `href`，格式如：
+1. **拿 PDF 链接**：从详情页提取。URL 格式：
    ```
    https://pdf.dfcfw.com/pdf/H3_AP202505251678987843_1.pdf?1748207582000.pdf
    ```
@@ -143,13 +183,15 @@ API 返回的 `attachPages` 字段即研报页数。
    - `-A`: 设置 User-Agent 绕过反爬
    - macOS / Linux 自带 curl，Windows 10+ 内置 curl
 
-3. **校验文件**：检查文件前 4 字节是否为 `%PDF`，确保下载的是真 PDF 而非拦截页面。
+3. **校验文件**：检查前 4 字节是否为 `%PDF`，确保是真 PDF 而非拦截页面。
 
-4. **文件命名**：用研报标题做文件名，去除 `\/:*?"<>|` 等非法字符，限制 100 字符内。
+4. **文件命名**：用研报标题做文件名，去除 `\/:*?"<>|` 等非法字符，最长 100 字符。
 
-### 批量下载
+### 频率控制
 
-从 API 列表筛选出目标后，对每篇重复上述步骤。建议每篇间隔 1-2 秒。
+- API 查询间隔 ≥ 1 秒
+- PDF 下载间隔 ≥ 2 秒
+- 单次会话下载不超过 10 份，避免 IP 被临时封禁
 
 ---
 
@@ -158,35 +200,36 @@ API 返回的 `attachPages` 字段即研报页数。
 ### 查研报列表 + 页数过滤
 
 ```
-1. WebFetch 调对应 API → JSON
-2. 过滤 attachPages > 2（或用户指定阈值）
+1. 行业/策略/宏观/晨报 → WebFetch 调 GET API；个股 → bash curl POST API
+2. 拿 JSON，过滤 attachPages > 2（或用户指定阈值）
 3. 列出：序号 + 标题 + 券商 + 日期 + 页数 + 评级
-4. 问用户想看哪篇摘要
+4. 评级含义参考评级对照表，向用户解释
+5. 问用户想看哪篇的摘要
 ```
 
 ### 看摘要
 
 ```
 1. 用 encodeUrl 拼详情页 URL
-2. WebFetch → 提取 div.ctx-content 前 800 字
+2. WebFetch 访问，提取正文前 800 字
 3. 总结核心观点呈现给用户
-4. 问用户是否需要下载完整 PDF
+4. 问是否需要下载完整 PDF
 ```
 
 ### 下载 PDF
 
 ```
-1. 从详情页提取 a.pdf-link 的 href
+1. 从详情页提取 PDF 链接（优先 CSS 选择器，备用正则匹配）
 2. curl -L -o 下载到用户指定目录
-3. 校验文件是 PDF
+3. 校验文件是否为真 PDF
 ```
 
-### 策略/宏观/晨报筛选
+### 策略 / 宏观 / 晨报筛选（无 attachPages）
 
 ```
 1. WebFetch /jg API → JSON
-2. 取前 N 条的 encodeUrl 逐篇 WebFetch 详情页
-3. 按正文长度过滤（<500 字跳过）
+2. 取前 N 条的 encodeUrl，逐篇 WebFetch 详情页
+3. 按正文长度过滤（< 500 字 → 1-2 页，跳过）
 4. 输出摘要 → 按需下载
 ```
 
@@ -227,7 +270,7 @@ API 返回的 `attachPages` 字段即研报页数。
 ## 注意事项
 
 - 不支持港股研报
-- 合理控制请求频率
+- API 查询间隔 ≥ 1 秒，PDF 下载间隔 ≥ 2 秒，单次下载不超过 10 份
 - 数据仅供学习研究使用
 
 ---
