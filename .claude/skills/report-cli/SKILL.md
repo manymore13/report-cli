@@ -80,6 +80,8 @@ curl -s -X POST https://reportapi.eastmoney.com/report/list2 \
 
 沪市 6 开头（600519 贵州茅台），深市主板 0 开头（000858 五粮液），创业板 3 开头（300750 宁德时代）。输入时传 6 位纯数字，不加交易所前缀。
 
+若用户输入的是股票名称而非代码（如"帮我查茅台"），Claude 应凭常识转换为代码；不确定时向用户确认。
+
 ### 策略 / 宏观 / 晨报（GET，用 WebFetch）
 
 ```
@@ -132,6 +134,8 @@ API 返回的 `attachPages` 字段即研报页数。
 
 **默认跳过 ≤ 2 页的研报**（通常无实质内容）。用户可指定阈值，如"只看 10 页以上的"。
 
+> `attachPages` 为 `null` 或缺失时，视为未知页数。默认**暂不跳过**，标记为"页数未知"供用户自行判断。
+
 ---
 
 ## 三、获取摘要 — 详情页
@@ -146,7 +150,7 @@ API 返回的 `attachPages` 字段即研报页数。
 | 个股 | `https://data.eastmoney.com/report/zw_stock.jshtml?encodeUrl={encodeUrl}` |
 | 策略 / 宏观 / 晨报 | `https://data.eastmoney.com/report/zw_macresearch.jshtml?encodeUrl={encodeUrl}` |
 
-> 若详情页返回 404，尝试对 `encodeUrl` 值做 URL encode（`encodeURIComponent`）后再拼接。
+> 若详情页返回 404，对 `encodeUrl` 值做 **URL 百分号编码**后再拼接。不同工具对应：JS `encodeURIComponent()`、Python `urllib.parse.quote()`、bash 可调 `python3 -c "import urllib.parse; print(urllib.parse.quote('VALUE'))"`。
 
 ### 页面提取规则
 
@@ -183,7 +187,10 @@ API 返回的 `attachPages` 字段即研报页数。
    - `-A`: 设置 User-Agent 绕过反爬
    - macOS / Linux 自带 curl，Windows 10+ 内置 curl
 
-3. **校验文件**：检查前 4 字节是否为 `%PDF`，确保是真 PDF 而非拦截页面。
+3. **校验文件**：确保下载的是真 PDF 而非拦截页面。
+   ```bash
+   head -c 4 "研报标题.pdf"    # 应输出: %PDF
+   ```
 
 4. **文件命名**：用研报标题做文件名，去除 `\/:*?"<>|` 等非法字符，最长 100 字符。
 
@@ -228,7 +235,7 @@ API 返回的 `attachPages` 字段即研报页数。
 
 ```
 1. WebFetch /jg API → JSON
-2. 取前 N 条的 encodeUrl，逐篇 WebFetch 详情页
+2. 取前 5 条的 encodeUrl（避免请求过多），逐篇 WebFetch 详情页
 3. 按正文长度过滤（< 500 字 → 1-2 页，跳过）
 4. 输出摘要 → 按需下载
 ```
@@ -270,7 +277,7 @@ API 返回的 `attachPages` 字段即研报页数。
 ## 注意事项
 
 - 不支持港股研报
-- API 查询间隔 ≥ 1 秒，PDF 下载间隔 ≥ 2 秒，单次下载不超过 10 份
+- 频率控制详见第四节
 - 数据仅供学习研究使用
 
 ---
