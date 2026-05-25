@@ -6,6 +6,19 @@
 
 ---
 
+## 如何选择
+
+| | 方式一：Skill | 方式二：CLI |
+|---|---|---|
+| 适合人群 | AI Agent 用户（Cursor、Claude Code 等） | 终端用户、脚本自动化 |
+| 交互方式 | 自然语言，无需记命令 | 命令行参数，精确控制 |
+| 典型场景 | 快速查询、筛选对比、内容分析 | 批量下载、定时任务、数据处理 |
+| 需要安装 | 仅需在 Agent 中配置 | `pip install report-cli` |
+
+如果你平时用 AI Agent 写代码，推荐方式一；如果需要脚本批处理或 CI 集成，用方式二。
+
+---
+
 ## 方式一：Skill 安装（推荐）
 
 在 AI Agent（Cursor、Claude Code、Cline、Codex 等）对话框中发送：
