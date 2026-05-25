@@ -123,17 +123,49 @@
             color: var(--accent-green);
         }
 
+        .skill-prompt-wrapper {
+            position: relative;
+            margin: 16px 0;
+        }
+
         .skill-prompt {
             background: var(--code-bg);
             border: 1px solid var(--accent-green);
             border-radius: 8px;
-            padding: 16px 20px;
+            padding: 16px 48px 16px 20px;
             font-family: 'Fira Code', monospace;
             font-size: 0.95rem;
             color: var(--accent-green);
             text-align: center;
-            margin: 16px 0;
             word-break: break-all;
+        }
+
+        .copy-btn {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            font-family: 'Noto Sans SC', sans-serif;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .copy-btn:hover {
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+        }
+
+        .copy-btn.copied {
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+            background: rgba(63, 185, 80, 0.1);
         }
 
         .skill-note {
@@ -495,7 +527,8 @@
                 <span class="badge">🤖 Skill 安装</span>
                 <span class="badge">🖥️ CLI</span>
                 <span class="badge">📥 PDF/CSV</span>
-                <span class="badge">🐍 Python</span>
+                <span class="badge">🐍 Python 3.8+</span>
+                <span class="badge">📦 v1.3.3</span>
             </div>
         </header>
 
@@ -509,8 +542,9 @@
                 在 Agent 里发送下面这句话，自动完成安装，无需手动操作
             </p>
 
-            <div class="skill-prompt">
-                请帮我安装 skill: https://raw.githubusercontent.com/manymore13/eastmoney/master/SKILL.md
+            <div class="skill-prompt-wrapper">
+                <div class="skill-prompt" id="skillPrompt">请帮我安装 skill: https://raw.githubusercontent.com/manymore13/report-cli/refs/heads/master/.claude/skills/report-cli/SKILL.md</div>
+                <button class="copy-btn" id="copyBtn" onclick="copySkillPrompt()">复制</button>
             </div>
 
             <p class="skill-note">
@@ -521,12 +555,14 @@
                 <h3 style="text-align:center; margin-bottom: 16px; color: var(--text-primary);">安装后，直接用自然语言交互</h3>
 
                 <div class="chat-bubbles">
-                    <div class="chat-bubble user">帮我查一下游戏行业的最新研报</div>
-                    <div class="chat-bubble agent">好的，已查询游戏行业最近5篇研报...</div>
-                    <div class="chat-bubble user">下载最近3篇策略报告的PDF</div>
-                    <div class="chat-bubble agent">已下载3篇策略报告到 ./reports/ 目录</div>
-                    <div class="chat-bubble user">贵州茅台有什么最新分析？</div>
-                    <div class="chat-bubble agent">以下是最新的贵州茅台个股研报...</div>
+                    <div class="chat-bubble user">帮我查一下游戏行业最近有什么研报</div>
+                    <div class="chat-bubble agent">已查询游戏行业最近5篇研报，含行业趋势和重点公司分析</div>
+                    <div class="chat-bubble user">只看10页以上的深度报告</div>
+                    <div class="chat-bubble agent">已筛选出3篇深度报告（≥10页），均为头部券商发布</div>
+                    <div class="chat-bubble user">今天的券商晨报说了什么</div>
+                    <div class="chat-bubble agent">今日晨报关注：科技板块反弹、消费复苏信号、新能源政策动向</div>
+                    <div class="chat-bubble user">宁德时代有什么最新研报，只看买入评级的</div>
+                    <div class="chat-bubble agent">宁德时代近30天共3篇买入评级研报，目标价区间 280-320 元</div>
                 </div>
             </div>
         </section>
@@ -549,7 +585,7 @@
                 <div class="step-number">2</div>
                 <div class="step-content">
                     <h3>列出行业</h3>
-                    <div class="step-code">report list</div>
+                    <div class="step-code">report l</div>
                 </div>
             </div>
 
@@ -557,7 +593,7 @@
                 <div class="step-number">3</div>
                 <div class="step-content">
                     <h3>查询研报</h3>
-                    <div class="step-code">report query -i 1046 -s 5</div>
+                    <div class="step-code">report q -i 1046 -s 5</div>
                 </div>
             </div>
         </section>
@@ -566,23 +602,23 @@
         <section class="features">
             <div class="feature-card">
                 <div class="feature-icon">📋</div>
-                <div class="feature-title">查询研报</div>
-                <div class="feature-desc">行业、策略、宏观、个股等各类研报</div>
+                <div class="feature-title">多维查询</div>
+                <div class="feature-desc">行业、策略、宏观、晨报、个股全覆盖</div>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">📥</div>
-                <div class="feature-title">下载PDF</div>
-                <div class="feature-desc">一键批量下载研报PDF到本地</div>
+                <div class="feature-title">批量下载</div>
+                <div class="feature-desc">支持指定序号、日期范围和数量筛选</div>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">📊</div>
-                <div class="feature-title">导出数据</div>
-                <div class="feature-desc">导出为CSV，Excel打开直接看</div>
+                <div class="feature-title">CSV导出</div>
+                <div class="feature-desc">查询结果导出，Excel直接打开分析</div>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">🔍</div>
-                <div class="feature-title">搜索行业</div>
-                <div class="feature-desc">按行业、股票代码精准筛选</div>
+                <div class="feature-title">搜索发现</div>
+                <div class="feature-desc">列出行业分类、搜索关键词快速定位</div>
             </div>
         </section>
 
@@ -597,39 +633,73 @@
                     <div class="usecase-title">
                         <span class="icon">🎮</span> 行业研报
                     </div>
-                    <div class="usecase-command">report query -i 1046 -s 10</div>
+                    <div class="usecase-command">report q -i 1046 -s 10</div>
+                    <div class="usecase-desc">按行业代码查询，支持日期和页码筛选</div>
                 </div>
 
                 <div class="usecase-card">
                     <div class="usecase-title">
                         <span class="icon">📈</span> 策略报告
                     </div>
-                    <div class="usecase-command">report query -t strategy -s 5</div>
+                    <div class="usecase-command">report q -t strategy -s 5</div>
+                    <div class="usecase-desc">市场策略与投资方向分析</div>
                 </div>
 
                 <div class="usecase-card">
                     <div class="usecase-title">
                         <span class="icon">🍷</span> 个股研报
                     </div>
-                    <div class="usecase-command">report query -t stock -c 600519</div>
+                    <div class="usecase-command">report q -t stock -c 600519</div>
+                    <div class="usecase-desc">按股票代码精准查询，支持评级筛选</div>
+                </div>
+
+                <div class="usecase-card">
+                    <div class="usecase-title">
+                        <span class="icon">🌍</span> 宏观研究
+                    </div>
+                    <div class="usecase-command">report q -t macro -s 5</div>
+                    <div class="usecase-desc">宏观经济趋势与政策解读</div>
+                </div>
+
+                <div class="usecase-card">
+                    <div class="usecase-title">
+                        <span class="icon">🌅</span> 券商晨报
+                    </div>
+                    <div class="usecase-command">report q -t morning -s 5</div>
+                    <div class="usecase-desc">每日券商晨会观点汇总</div>
                 </div>
 
                 <div class="usecase-card">
                     <div class="usecase-title">
                         <span class="icon">📥</span> 下载PDF
                     </div>
-                    <div class="usecase-command">report download -i 1046 -s 3 -o ./reports</div>
+                    <div class="usecase-command">report d -i 1046 -s 5 -o ./reports</div>
+                    <div class="usecase-desc">批量下载研报PDF，支持指定序号</div>
                 </div>
             </div>
         </section>
 
         <footer>
             <div class="footer-links">
-                <a href="https://github.com/manymore13/eastmoney">GitHub</a>
-                <a href="https://github.com/manymore13/eastmoney/issues">问题反馈</a>
+                <a href="https://github.com/manymore13/report-cli">GitHub</a>
+                <a href="https://github.com/manymore13/report-cli/issues">问题反馈</a>
             </div>
-            <p>让研报下载更简单 ✨</p>
+            <p>让研报查询与分析更简单 ✨</p>
         </footer>
     </div>
+    <script>
+        function copySkillPrompt() {
+            const text = document.getElementById('skillPrompt').textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = document.getElementById('copyBtn');
+                btn.textContent = '已复制';
+                btn.classList.add('copied');
+                setTimeout(() => {
+                    btn.textContent = '复制';
+                    btn.classList.remove('copied');
+                }, 2000);
+            });
+        }
+    </script>
 </body>
 </html>
