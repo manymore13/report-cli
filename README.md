@@ -2,7 +2,7 @@
 
 [![PyPI version](https://img.shields.io/pypi/v/report-cli.svg)](https://pypi.org/project/report-cli/)
 
-查询和下载券商研报的命令行工具，支持行业研报、个股研报、策略报告、宏观研究、券商晨报。
+查询、分析和下载券商研报的命令行工具。支持行业研报、个股研报、策略报告、宏观研究、券商晨报，可导出 CSV。
 
 ---
 
