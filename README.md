@@ -11,7 +11,7 @@
 在 AI Agent（Cursor、Claude Code、Cline、Codex 等）对话框中发送：
 
 ```
-请帮我安装 skill: https://raw.githubusercontent.com/manymore13/report-cli/refs/heads/master/SKILL.md
+请帮我安装 skill: https://raw.githubusercontent.com/manymore13/report-cli/refs/heads/master/.claude/skills/report-cli/SKILL.md
 ```
 
 安装后直接用自然语言交互：
