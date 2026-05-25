@@ -303,4 +303,3 @@ API 返回的 `attachPages` 字段即研报页数。
 - 作者: [manymore13](https://github.com/manymore13)
 - 开源地址: [github.com/manymore13/report-cli](https://github.com/manymore13/report-cli)
 - 许可: MIT License
-- 数据来源: 东方财富网，仅供学习研究
